@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:cash_register/pages/accounting.dart';
+import 'dart:convert';
+import 'dart:async';
+import 'dart:io';
 
 
 class Sell extends StatefulWidget {
@@ -11,10 +15,10 @@ class Sell extends StatefulWidget {
 
 double total = 0;
 List<Choice> choices =  <Choice>[
-  Choice(id: 0,  title: 'Grosse Boule T80', prix :4.5 ,icon: 'assets/icons/bread.svg'),
-  Choice(id: 1,  title: 'Pain de mie T80', prix :4.5 , icon: 'assets/icons/pain_de_mie.svg'),
-  Choice(id: 2,  title: 'Grosse Boule T150', prix :4.5 , icon: 'assets/icons/bread.svg'),
-  Choice(id: 3,  title: 'Tourte de Seigle', prix :3.5 , icon: 'assets/icons/bread.svg'),
+  Choice(id: 0, title: 'Grosse Boule T80', prix :4.5 ,icon: 'assets/icons/bread.svg'),
+  Choice(id: 1, title: 'Pain de mie T80', prix :4.5 , icon: 'assets/icons/pain_de_mie.svg'),
+  Choice(id: 2, title: 'Grosse Boule T150', prix :4.5 , icon: 'assets/icons/bread.svg'),
+  Choice(id: 3, title: 'Tourte de Seigle', prix :3.5 , icon: 'assets/icons/bread.svg'),
 ];
 List<Choice> listes =  <Choice>[];
 
@@ -36,10 +40,8 @@ class SellState extends State<Sell> {
         body:Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-
             Expanded( //Liste des pains
               flex: 6,
-
               child: GridView.count(
                 padding: EdgeInsets.all(5.0),
                 crossAxisCount: 2,
@@ -109,7 +111,6 @@ class SellState extends State<Sell> {
                           ),
                         ),
                       ),
-
                       Expanded(//----------Liste des achats----
                         flex:7,
                         child: GridView.count(
@@ -246,7 +247,7 @@ class SellState extends State<Sell> {
                                               borderRadius: BorderRadius.circular(15),
                                               side: BorderSide(color: Colors.white)),
                                           color: Colors.green,
-                                          onPressed:  _resetAllCounter,
+                                          onPressed: () => _saveToAccounting(listes),//_resetAllCounter,
                                           textColor: Colors.white,
                                           child: Text("VALIDER")),
                                     ),),),
@@ -261,6 +262,26 @@ class SellState extends State<Sell> {
         ),
       ),
       );
+  }
+   _saveToAccounting(List<Choice> L){
+    if(listes.toString()!="[]"){
+      var now = DateTime.now().toString();
+      Map insert = {
+        "action":"Vente",
+        "heure":now,
+        "liste":[]
+      };
+      for (var i = 0; i< listes.length;i++){
+        insert["liste"].add({
+          "nomPain":L[i].title,
+          "prix":L[i].prix,
+          "Count":L[i]._count
+        });
+      }
+      action["Compte"].add(insert);
+      data = jsonEncode(action);
+      writeContent(data);
+    }
   }
   _decreaseCounter(Choice choice,int index){
     setState(() {
