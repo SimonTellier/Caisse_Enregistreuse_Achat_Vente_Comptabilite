@@ -265,10 +265,10 @@ class SellState extends State<Sell> {
   }
    _saveToAccounting(List<Choice> L){
     if(listes.toString()!="[]"){
-      var now = DateTime.now().toString();
+      var now = DateTime.now();
       Map insert = {
         "action":"Vente",
-        "heure":now,
+        "date":now.toString(),
         "liste":[]
       };
       for (var i = 0; i< listes.length;i++){
@@ -281,6 +281,7 @@ class SellState extends State<Sell> {
       action["Compte"].add(insert);
       data = jsonEncode(action);
       writeContent(data);
+      _resetAllCounter();
     }
   }
   _decreaseCounter(Choice choice,int index){

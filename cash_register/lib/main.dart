@@ -13,7 +13,7 @@ class App extends StatelessWidget {
       title: 'Cash_Register',
       home: HomePage(),
       theme: ThemeData(
-        primarySwatch: Colors.grey,
+        primarySwatch: Colors.brown,
       ),
       debugShowCheckedModeBanner: false,
     );

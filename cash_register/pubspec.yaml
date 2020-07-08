@@ -26,7 +26,7 @@ dependencies:
   flutter_svg: ^0.17.0
   material_design_icons_flutter: ^4.0.5345
   path_provider: ^1.6.11
-
+  intl: ^0.16.1
 
 
 dev_dependencies:
