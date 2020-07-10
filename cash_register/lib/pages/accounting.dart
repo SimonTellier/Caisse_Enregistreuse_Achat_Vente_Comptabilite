@@ -5,14 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:cash_register/pages/accountingByDay.dart';
 
 
-
-String data="";
-Map action={"Compte":[]};
-//{"Compte":[{"action":"Vente","heure":"1969-07-20 20:18:04Z","liste":[{"nomPain":"Grosse Boule T80","prix":3.5,"Count":8,},]},]}
-//{"Compte":[]}
-
+String data = "";
+Map action = {"Compte": []};
 
 Future<String> get _localPath async {
   final directory = await getApplicationDocumentsDirectory();
@@ -21,7 +18,7 @@ Future<String> get _localPath async {
 
 Future<File> get _localFile async {
   final path = await _localPath;
-  if(File('Accounting.txt').existsSync()==false){
+  if (File('Accounting.txt').existsSync() == false) {
     new File('$path/Accounting.txt');
   }
   return File('$path/Accounting.txt');
@@ -47,90 +44,95 @@ Future<String> readContent() async {
 
 class Accounting extends StatefulWidget {
   Accounting() : super();
+
   @override
   AccountingState createState() => AccountingState();
 }
 
 class AccountingState extends State<Accounting> {
   @override
-
-  List<DateTime> dayListe= [];
-
-
-
+  Map dayListe = {"ParJour": []};
 
   void initState() {
     super.initState();
     initializeDateFormatting();
     readContent().then((String value) {
       setState(() {
-        if(value=='Error!') {
+        if (value == 'Error!') {
           writeContent('{"Compte":[]}');
-          value='{"Compte":[]}';
+          value = '{"Compte":[]}';
         }
         data = value;
         action = jsonDecode(data);
-
       });
     });
   }
-  Widget build(BuildContext context){
 
-
-      return MaterialApp(
+  Widget build(BuildContext context) {
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        body: body()
+          body: body()
 
 
       ),
     );
   }
-  List<DateTime> Day(){
-    dayListe= [];
 
-    for (var i = 0; i<action["Compte"].length;i++){
-      if(!dayListe.contains(DateFormat('yyyy-MM-dd').parse(action["Compte"][i]["date"]))){
-        dayListe.add(DateFormat('yyyy-MM-dd').parse(action["Compte"][i]["date"]));
-        print(DateFormat.yMMMMEEEEd("fr").format(DateFormat('yyyy-MM-dd HH:mm:ss').parse(action["Compte"][i]["date"])));
-        print("2EME Print : "+action["Compte"][i]["date"]);
+  Map Day() {
+    dayListe = {"ParJour": []};
+    for (var i = action["Compte"].length - 1; i >= 0; i--) {
+      bool dayIsHere = false;
+      for (var j = 0; j < dayListe["ParJour"].length; j++) {
+        if (dayListe["ParJour"][j]["Day"].contains(DateFormat.yMMMMEEEEd("fr").format(DateFormat('yyyy-MM-dd').parse(action["Compte"][i]["date"])))) {
+          dayListe["ParJour"][j]["Liste"].add(
+              action["Compte"][i]);
+          dayIsHere = true;
+        }
       }
-
+      if (!dayIsHere) {
+        dayListe["ParJour"].add({
+          "Day": DateFormat.yMMMMEEEEd("fr").format(DateFormat('yyyy-MM-dd').parse(action["Compte"][i]["date"])),
+          "Liste": []
+        });
+        dayListe["ParJour"][dayListe["ParJour"].length-1]["Liste"].add(action["Compte"][i]);
+      }
     }
-
     return dayListe;
   }
 
-  Widget body(){
+  Widget body() {
     dayListe = Day();
-    if(dayListe.isEmpty){
+    if (dayListe["ParJour"].isEmpty) {
       print("if");
       return Container(
-          child: Text("salut")
+          child: Text("La liste action est vide")
       );
     }
-    else{
+    else {
       return new ListView.builder(
-
-        itemCount: data == null ? 0 : Day().length,
+        itemCount: data == null ? 0 : Day()["ParJour"].length,
         itemBuilder: (BuildContext context, int index) {
           return new Card(
             child: ListTile(
-              contentPadding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 0.0),
-              //dayListe
-              title: Text(DateFormat.yMMMMEEEEd("fr").format(dayListe[index])),
-              subtitle: Text(data),
+              contentPadding: EdgeInsets.symmetric(
+                  horizontal: 20.0, vertical: 0.0),
+              title: Text(dayListe["ParJour"][index]["Day"]),
               trailing: IconButton(icon: Icon(Icons.arrow_forward_ios)),
-            //onTap: (){ Navigator.push(context,MaterialPageRoute(builder: (context) => PlayListEnCours(indexEnCours: index)));},
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                    AccountingByDay(dayChoisi: dayListe["ParJour"][index])));
+              },
             ),
-              shape: RoundedRectangleBorder(
+            shape: RoundedRectangleBorder(
               borderRadius: const BorderRadius.all(
-              Radius.circular(20.0),
+                Radius.circular(20.0),
+              ),
             ),
-          ),
-        );
-      },
-    );
+          );
+        },
+      );
     }
   }
 }
+

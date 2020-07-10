@@ -30,7 +30,7 @@ class _HomePageState extends State<HomePage> {
       case 2:
         return new ThirdFragment();
       default:
-        return new Text("");
+        return new Text("Error NavigationBar");
     }
   }
 
@@ -42,10 +42,12 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(40.0), // here the desired height
+    child: AppBar(
         title: Text('Cash_Register'),
       ),
-
+      ),
       body: _getDrawerItemWidget(_currentIndex),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed, //pour ne pas avoir de bugs avec plus de 3 boutons
