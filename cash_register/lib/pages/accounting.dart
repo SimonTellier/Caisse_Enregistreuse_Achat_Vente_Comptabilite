@@ -7,7 +7,6 @@ import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:cash_register/pages/accountingByDay.dart';
 
-
 String data = "";
 Map action = {"Compte": []};
 
@@ -71,11 +70,7 @@ class AccountingState extends State<Accounting> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Scaffold(
-          body: body()
-
-
-      ),
+      home: Scaffold(body: body()),
     );
   }
 
@@ -84,18 +79,21 @@ class AccountingState extends State<Accounting> {
     for (var i = action["Compte"].length - 1; i >= 0; i--) {
       bool dayIsHere = false;
       for (var j = 0; j < dayListe["ParJour"].length; j++) {
-        if (dayListe["ParJour"][j]["Day"].contains(DateFormat.yMMMMEEEEd("fr").format(DateFormat('yyyy-MM-dd').parse(action["Compte"][i]["date"])))) {
-          dayListe["ParJour"][j]["Liste"].add(
-              action["Compte"][i]);
+        if (dayListe["ParJour"][j]["Day"].contains(DateFormat.yMMMMEEEEd("fr")
+            .format(
+                DateFormat('yyyy-MM-dd').parse(action["Compte"][i]["date"])))) {
+          dayListe["ParJour"][j]["Liste"].add(action["Compte"][i]);
           dayIsHere = true;
         }
       }
       if (!dayIsHere) {
         dayListe["ParJour"].add({
-          "Day": DateFormat.yMMMMEEEEd("fr").format(DateFormat('yyyy-MM-dd').parse(action["Compte"][i]["date"])),
+          "Day": DateFormat.yMMMMEEEEd("fr").format(
+              DateFormat('yyyy-MM-dd').parse(action["Compte"][i]["date"])),
           "Liste": []
         });
-        dayListe["ParJour"][dayListe["ParJour"].length-1]["Liste"].add(action["Compte"][i]);
+        dayListe["ParJour"][dayListe["ParJour"].length - 1]["Liste"]
+            .add(action["Compte"][i]);
       }
     }
     return dayListe;
@@ -105,34 +103,42 @@ class AccountingState extends State<Accounting> {
     dayListe = Day();
     if (dayListe["ParJour"].isEmpty) {
       print("if");
-      return Container(
-          child: Text("La liste action est vide")
-      );
-    }
-    else {
-      return new ListView.builder(
-        itemCount: data == null ? 0 : Day()["ParJour"].length,
-        itemBuilder: (BuildContext context, int index) {
-          return new Card(
-            child: ListTile(
-              contentPadding: EdgeInsets.symmetric(
-                  horizontal: 20.0, vertical: 0.0),
-              title: Text(dayListe["ParJour"][index]["Day"]),
-              trailing: IconButton(icon: Icon(Icons.arrow_forward_ios)),
-              onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) =>
-                    AccountingByDay(dayChoisi: dayListe["ParJour"][index])));
-              },
-            ),
-            shape: RoundedRectangleBorder(
-              borderRadius: const BorderRadius.all(
-                Radius.circular(20.0),
-              ),
-            ),
-          );
-        },
-      );
+      return Container(child: Text("La liste action est vide"));
+    } else {
+      return new MediaQuery.removePadding(
+          context: context,
+          removeTop: true,
+          child: ListView.builder(
+            itemCount: data == null ? 0 : Day()["ParJour"].length,
+            itemBuilder: (BuildContext context, int index) {
+              return new GestureDetector(
+                child: Card(
+                  margin: EdgeInsets.only(top: 5),
+
+                  color: Colors.green,
+                  child: ListTile(
+                    title: Text(
+                      dayListe["ParJour"][index]["Day"],
+                      style: TextStyle(backgroundColor: Colors.blue),
+                    ),
+                    trailing: IconButton(icon: Icon(Icons.arrow_forward_ios)),
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => AccountingByDay(
+                                  dayChoisi: dayListe["ParJour"][index])));
+                    },
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: const BorderRadius.all(
+                      Radius.circular(20.0),
+                    ),
+                  ),
+                ),
+              );
+            },
+          ));
     }
   }
 }
-
