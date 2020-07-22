@@ -105,10 +105,7 @@ class AccountingState extends State<Accounting> {
       print("if");
       return Container(child: Text("La liste action est vide"));
     } else {
-      return new MediaQuery.removePadding(
-          context: context,
-          removeTop: true,
-          child: ListView.builder(
+      return new  ListView.builder(
             itemCount: data == null ? 0 : Day()["ParJour"].length,
             itemBuilder: (BuildContext context, int index) {
               return new GestureDetector(
@@ -138,7 +135,7 @@ class AccountingState extends State<Accounting> {
                 ),
               );
             },
-          ));
+          );
     }
   }
 }

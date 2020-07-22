@@ -42,12 +42,10 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(40.0), // here the desired height
-    child: AppBar(
+      appBar:  AppBar(
         title: Text('Cash_Register'),
       ),
-      ),
+
       body: _getDrawerItemWidget(_currentIndex),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed, //pour ne pas avoir de bugs avec plus de 3 boutons
