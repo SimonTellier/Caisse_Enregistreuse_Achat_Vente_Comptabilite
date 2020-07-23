@@ -63,6 +63,8 @@ class AccountingState extends State<Accounting> {
         }
         data = value;
         action = trierJour(jsonDecode(data));
+        var dataTrier = jsonEncode(action);
+        writeContent(dataTrier);
         dayListe = Day();
 
       });
@@ -78,7 +80,7 @@ class AccountingState extends State<Accounting> {
 
   Map Day() {
     dayListe = {"ParJour": []};
-    for (var i = action["Compte"].length - 1; i >= 0; i--) {
+    for (var i = action["Compte"].length-1; i>= 0; i--) {
       bool dayIsHere = false;
       for (var j = 0; j < dayListe["ParJour"].length; j++) {
         if (dayListe["ParJour"][j]["Day"].contains(DateFormat.yMMMMEEEEd("fr")
@@ -142,9 +144,10 @@ class AccountingState extends State<Accounting> {
           );
     }
   }
-  trierJour(Map jsonPasTrier){
-    Map jsonTrier = {"Compte": []};
-      json
+  Map trierJour(Map jsonPasTrier){
+    jsonPasTrier["Compte"].sort(
+            (e1,e2) =>
+            (DateFormat('yyyy-MM-dd HH:mm').parse(e1["date"]).compareTo(DateFormat('yyyy-MM-dd HH:mm').parse(e2["date"]))));
     return jsonPasTrier;
   }
 }
