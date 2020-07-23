@@ -15,6 +15,15 @@ Future<String> get _localPath async {
   return directory.path;
 }
 
+Map trierJour(Map jsonPasTrier){
+  jsonPasTrier["Compte"].sort(
+          (e1,e2) =>
+      (DateFormat('yyyy-MM-dd HH:mm').parse(e1["date"]).compareTo(DateFormat('yyyy-MM-dd HH:mm').parse(e2["date"]))));
+  var dataTrier = jsonEncode(jsonPasTrier);
+  writeContent(dataTrier);
+  return jsonPasTrier;
+}
+
 Future<File> get _localFile async {
   final path = await _localPath;
   if (File('Accounting.txt').existsSync() == false) {
@@ -63,8 +72,6 @@ class AccountingState extends State<Accounting> {
         }
         data = value;
         action = trierJour(jsonDecode(data));
-        var dataTrier = jsonEncode(action);
-        writeContent(dataTrier);
         dayListe = Day();
 
       });
@@ -144,10 +151,5 @@ class AccountingState extends State<Accounting> {
           );
     }
   }
-  Map trierJour(Map jsonPasTrier){
-    jsonPasTrier["Compte"].sort(
-            (e1,e2) =>
-            (DateFormat('yyyy-MM-dd HH:mm').parse(e1["date"]).compareTo(DateFormat('yyyy-MM-dd HH:mm').parse(e2["date"]))));
-    return jsonPasTrier;
-  }
+
 }

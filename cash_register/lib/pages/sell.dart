@@ -393,7 +393,7 @@ class SellState extends State<Sell> {
             {"nomPain": L[i].title, "prix": L[i].prix, "Count": L[i]._count});
       }
       action["Compte"].add(insert);
-      data = jsonEncode(action);
+      data = jsonEncode(trierJour(action));
       writeContent(data);
       _resetAllCounter();
     }
