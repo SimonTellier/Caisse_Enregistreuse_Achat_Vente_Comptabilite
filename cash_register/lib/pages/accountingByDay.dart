@@ -12,23 +12,8 @@ class AccountingByDay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        extendBodyBehindAppBar: false,
-        appBar: PreferredSize(
-            preferredSize: Size(double.infinity, 56),
-            child: Visibility(
-                visible: false,
-                child: AppBar(
-
-                  title: Text(
-                    this.dayChoisi["Day"],
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                        color: Colors.white),
-                  ),
-                ))),
-        body: Column(
+    return Material(
+        child: Column(
             children: <Widget>[
           Expanded(
               flex: 1,
@@ -76,6 +61,7 @@ class AccountingByDay extends StatelessWidget {
           Expanded(
               flex: 12,
               child: ListView.builder(
+                padding: EdgeInsets.all(0),
                   controller: _scrollController,
                   shrinkWrap: true,
                   itemCount: this.dayChoisi["Liste"].length,

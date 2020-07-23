@@ -62,7 +62,9 @@ class AccountingState extends State<Accounting> {
           value = '{"Compte":[]}';
         }
         data = value;
-        action = jsonDecode(data);
+        action = trierJour(jsonDecode(data));
+        dayListe = Day();
+
       });
     });
   }
@@ -70,7 +72,7 @@ class AccountingState extends State<Accounting> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Scaffold(body: body()),
+      home: Material(child: body()),
     );
   }
 
@@ -103,10 +105,12 @@ class AccountingState extends State<Accounting> {
     dayListe = Day();
     if (dayListe["ParJour"].isEmpty) {
       print("if");
+
       return Container(child: Text("La liste action est vide"));
     } else {
       return new  ListView.builder(
-            itemCount: data == null ? 0 : Day()["ParJour"].length,
+        padding: EdgeInsets.all(0),
+        itemCount: data == null ? 0 : Day()["ParJour"].length,
             itemBuilder: (BuildContext context, int index) {
               return new GestureDetector(
                 child: Card(
@@ -137,5 +141,10 @@ class AccountingState extends State<Accounting> {
             },
           );
     }
+  }
+  trierJour(Map jsonPasTrier){
+    Map jsonTrier = {"Compte": []};
+      json
+    return jsonPasTrier;
   }
 }

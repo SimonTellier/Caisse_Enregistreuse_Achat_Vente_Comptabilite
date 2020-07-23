@@ -385,7 +385,7 @@ class SellState extends State<Sell> {
     if (listes.toString() != "[]") {
       Map insert = {
         "action": "Vente",
-        "date": DateTime.now().add(Duration(days: 2)).toString(),
+        "date": DateTime.now().toString(),
         "listePainVendu": []
       };
       for (var i = 0; i < listes.length; i++) {
