@@ -9,12 +9,36 @@ import 'package:cash_register/pages/accountingByDay.dart';
 
 String data = "";
 Map action = {"Compte": []};
+Map dayListe = {"ParJour": []};
 
 Future<String> get _localPath async {
   final directory = await getApplicationDocumentsDirectory();
   return directory.path;
 }
-
+Map Day() {
+  dayListe = {"ParJour": []};
+  for (var i = action["Compte"].length-1; i>= 0; i--) {
+    bool dayIsHere = false;
+    for (var j = 0; j < dayListe["ParJour"].length; j++) {
+      if (dayListe["ParJour"][j]["Day"].contains(DateFormat.yMMMMEEEEd("fr")
+          .format(
+          DateFormat('yyyy-MM-dd').parse(action["Compte"][i]["date"])))) {
+        dayListe["ParJour"][j]["Liste"].add(action["Compte"][i]);
+        dayIsHere = true;
+      }
+    }
+    if (!dayIsHere) {
+      dayListe["ParJour"].add({
+        "Day": DateFormat.yMMMMEEEEd("fr").format(
+            DateFormat('yyyy-MM-dd').parse(action["Compte"][i]["date"])),
+        "Liste": []
+      });
+      dayListe["ParJour"][dayListe["ParJour"].length - 1]["Liste"]
+          .add(action["Compte"][i]);
+    }
+  }
+  return dayListe;
+}
 Map trierJour(Map jsonPasTrier){
   jsonPasTrier["Compte"].sort(
           (e1,e2) =>
@@ -59,7 +83,6 @@ class Accounting extends StatefulWidget {
 
 class AccountingState extends State<Accounting> {
   @override
-  Map dayListe = {"ParJour": []};
 
   void initState() {
     super.initState();
@@ -85,30 +108,7 @@ class AccountingState extends State<Accounting> {
     );
   }
 
-  Map Day() {
-    dayListe = {"ParJour": []};
-    for (var i = action["Compte"].length-1; i>= 0; i--) {
-      bool dayIsHere = false;
-      for (var j = 0; j < dayListe["ParJour"].length; j++) {
-        if (dayListe["ParJour"][j]["Day"].contains(DateFormat.yMMMMEEEEd("fr")
-            .format(
-                DateFormat('yyyy-MM-dd').parse(action["Compte"][i]["date"])))) {
-          dayListe["ParJour"][j]["Liste"].add(action["Compte"][i]);
-          dayIsHere = true;
-        }
-      }
-      if (!dayIsHere) {
-        dayListe["ParJour"].add({
-          "Day": DateFormat.yMMMMEEEEd("fr").format(
-              DateFormat('yyyy-MM-dd').parse(action["Compte"][i]["date"])),
-          "Liste": []
-        });
-        dayListe["ParJour"][dayListe["ParJour"].length - 1]["Liste"]
-            .add(action["Compte"][i]);
-      }
-    }
-    return dayListe;
-  }
+
 
   Widget body() {
     dayListe = Day();

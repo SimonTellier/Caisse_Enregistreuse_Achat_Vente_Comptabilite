@@ -4,6 +4,9 @@ import 'package:cash_register/pages/accounting.dart';
 import 'dart:convert';
 import 'dart:async';
 import 'dart:io';
+import 'package:intl/date_symbol_data_local.dart';
+
+
 
 class Sell extends StatefulWidget {
   Sell() : super();
@@ -49,11 +52,26 @@ class Choice {
 
 class SellState extends State<Sell> {
   @override
+  void initState() {
+    initializeDateFormatting();
+    readContent().then((String value) {
+      setState(() {
+        if (value == 'Error!') {
+          writeContent('{"Compte":[]}');
+          value = '{"Compte":[]}';
+        }
+        data = value;
+        action = trierJour(jsonDecode(data));
+        dayListe = Day();
+
+      });
+    });
+  }
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        body: Row(
+      home: Material(
+        child: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Expanded(
@@ -395,6 +413,7 @@ class SellState extends State<Sell> {
       action["Compte"].add(insert);
       data = jsonEncode(trierJour(action));
       writeContent(data);
+      dayListe = Day();
       _resetAllCounter();
     }
   }
