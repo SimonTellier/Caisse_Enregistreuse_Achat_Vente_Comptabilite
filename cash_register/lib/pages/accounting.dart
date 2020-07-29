@@ -15,14 +15,15 @@ Future<String> get _localPath async {
   final directory = await getApplicationDocumentsDirectory();
   return directory.path;
 }
+
 Map Day() {
   dayListe = {"ParJour": []};
-  for (var i = action["Compte"].length-1; i>= 0; i--) {
+  for (var i = action["Compte"].length - 1; i >= 0; i--) {
     bool dayIsHere = false;
     for (var j = 0; j < dayListe["ParJour"].length; j++) {
       if (dayListe["ParJour"][j]["Day"].contains(DateFormat.yMMMMEEEEd("fr")
           .format(
-          DateFormat('yyyy-MM-dd').parse(action["Compte"][i]["date"])))) {
+              DateFormat('yyyy-MM-dd').parse(action["Compte"][i]["date"])))) {
         dayListe["ParJour"][j]["Liste"].add(action["Compte"][i]);
         dayIsHere = true;
       }
@@ -39,10 +40,11 @@ Map Day() {
   }
   return dayListe;
 }
-Map trierJour(Map jsonPasTrier){
-  jsonPasTrier["Compte"].sort(
-          (e1,e2) =>
-      (DateFormat('yyyy-MM-dd HH:mm').parse(e1["date"]).compareTo(DateFormat('yyyy-MM-dd HH:mm').parse(e2["date"]))));
+
+Map trierJour(Map jsonPasTrier) {
+  jsonPasTrier["Compte"].sort((e1, e2) => (DateFormat('yyyy-MM-dd HH:mm')
+      .parse(e1["date"])
+      .compareTo(DateFormat('yyyy-MM-dd HH:mm').parse(e2["date"]))));
   var dataTrier = jsonEncode(jsonPasTrier);
   writeContent(dataTrier);
   return jsonPasTrier;
@@ -83,7 +85,6 @@ class Accounting extends StatefulWidget {
 
 class AccountingState extends State<Accounting> {
   @override
-
   void initState() {
     super.initState();
     initializeDateFormatting();
@@ -96,7 +97,6 @@ class AccountingState extends State<Accounting> {
         data = value;
         action = trierJour(jsonDecode(data));
         dayListe = Day();
-
       });
     });
   }
@@ -108,8 +108,6 @@ class AccountingState extends State<Accounting> {
     );
   }
 
-
-
   Widget body() {
     dayListe = Day();
     if (dayListe["ParJour"].isEmpty) {
@@ -117,39 +115,65 @@ class AccountingState extends State<Accounting> {
 
       return Container(child: Text("La liste action est vide"));
     } else {
-      return new  ListView.builder(
-        padding: EdgeInsets.all(0),
-        itemCount: data == null ? 0 : Day()["ParJour"].length,
-            itemBuilder: (BuildContext context, int index) {
-              return new GestureDetector(
-                child: Card(
-                  margin: EdgeInsets.only(top: 5),
-
-                  color: Colors.green,
-                  child: ListTile(
-                    title: Text(
-                      dayListe["ParJour"][index]["Day"],
-                      style: TextStyle(backgroundColor: Colors.blue),
-                    ),
-                    trailing: IconButton(icon: Icon(Icons.arrow_forward_ios)),
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => AccountingByDay(
-                                  dayChoisi: dayListe["ParJour"][index])));
-                    },
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: const BorderRadius.all(
-                      Radius.circular(20.0),
-                    ),
-                  ),
+      return new Column(children: <Widget>[
+        Expanded(
+            flex: 1,
+            child: Container(
+              decoration: BoxDecoration(
+                color: const Color(0xFFBCAAA4),
+                border: Border.all(
+                  color: Color(0xFF8D6E63),
+                  width: 1,
                 ),
-              );
-            },
-          );
+                borderRadius: BorderRadius.only(
+                    bottomRight: Radius.circular(15),
+                    bottomLeft: Radius.circular(15)),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  new Radio(value: 1, groupValue: null, onChanged: null),
+                  new Radio(value: 2, groupValue: null, onChanged: null),
+                  new Radio(value: 3, groupValue: null, onChanged: null),
+
+                ],
+              )
+        )),
+        Expanded(
+            flex: 11,
+            child: ListView.builder(
+              padding: EdgeInsets.all(0),
+              itemCount: data == null ? 0 : Day()["ParJour"].length,
+              itemBuilder: (BuildContext context, int index) {
+                return new GestureDetector(
+                  child: Card(
+                    margin: EdgeInsets.only(top: 5),
+                    color: Colors.green,
+                    child: ListTile(
+                      title: Text(
+                        dayListe["ParJour"][index]["Day"],
+                        style: TextStyle(backgroundColor: Colors.blue),
+                      ),
+                      trailing: IconButton(icon: Icon(Icons.arrow_forward_ios)),
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => AccountingByDay(
+                                    dayChoisi: dayListe["ParJour"][index])));
+                      },
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(20.0),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ))
+      ]);
     }
   }
-
 }
